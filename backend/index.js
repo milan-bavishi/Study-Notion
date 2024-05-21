@@ -2,6 +2,10 @@ const express = require("express");
 
 const app = express();
 
+
+const userRoutes = require("./routes/User");
+
+
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
@@ -32,6 +36,10 @@ const {cloudinaryconnect} = require("./config/Cloudinary")
 // );
 
 cloudinaryconnect();
+
+app.use("/auth",userRoutes);
+
+
 app.get("/", (req, res) => {
   res.status(200).json({
     message: "Welcome to API",
@@ -41,3 +49,4 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
