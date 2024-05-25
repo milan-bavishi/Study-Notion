@@ -102,32 +102,33 @@ exports.signup = async (req, res) => {
   }
 };
 
-exports.login = async (req,res) => {
-    try{
+// exports.login = async (req,res) => {
+//     try{
 
-        const{ email, password } =  req.body;
+//         const{ email, password } =  req.body;
 
-        if(!email || !password){
-            return res.status(400).json({
-                success: false,
-                message: `Plese Fill up All the Requied Fields`,
-            });
-        }
+//         if(!email || !password){
+//             return res.status(400).json({
+//                 success: false,
+//                 message: `Plese Fill up All the Requied Fields`,
+//             });
+//         }
 
-        const user = await User.findOne({ email }).populate("additionDetails");
+//         const user = await User.findOne({ email }).populate("additionDetails");
 
-        if(!user){
-            return res.status(401).json({
-                success: false,
-                message: `User is not Registered with Us Plese SignUp to Continue`,
-            });
-        }
+//         if(!user){
+//             return res.status(401).json({
+//                 success: false,
+//                 message: `User is not Registered with Us Plese SignUp to Continue`,
+//             });
+//         }
 
-        if(await bcrypt.compare(password, user.password)){
-            
-        }
-    }
-};
+//         if(await bcrypt.compare(password, user.password)){
+//             const token = jwt.sign(
+//               {email: user.email, id: user._id,})
+//         }
+//     }
+// };
 
 
 exports.sendotp = async (req, res) => {

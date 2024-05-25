@@ -4,7 +4,7 @@ const app = express();
 
 
 const userRoutes = require("./routes/User");
-
+const contactusRoutes = require("./routes/Contactus")
 
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -38,7 +38,7 @@ const {cloudinaryconnect} = require("./config/Cloudinary")
 cloudinaryconnect();
 
 app.use("/auth",userRoutes);
-
+app.use("/contact",contactusRoutes)
 
 app.get("/", (req, res) => {
   res.status(200).json({
