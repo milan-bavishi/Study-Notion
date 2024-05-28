@@ -1,7 +1,7 @@
 const express = require("express");
 
 const app = express();
-
+const fileUpload = require("express-fileupload")
 
 const userRoutes = require("./routes/User");
 const contactusRoutes = require("./routes/Contactus")
@@ -40,13 +40,13 @@ cloudinaryconnect();
 app.use("/auth",userRoutes);
 app.use("/contact",contactusRoutes)
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    message: "Welcome to API",
+  app.get("/", (req, res) => {
+    res.status(200).json({
+      message: "Welcome to API",
+    });
   });
-});
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 
