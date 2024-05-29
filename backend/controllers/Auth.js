@@ -5,6 +5,8 @@ const User = require("../models/User");
 const otpGenerator = require("otp-generator");
 const sendVerificationEmail = require("../models/OTP");
 const Profile = require("../models/Profile");
+const { passwordUpdated } = require("../mail/templates/passwordUpdate");
+const mailSender = require("../utils/mailSender");
 
 //Signup API
 exports.signup = async (req, res) => {
@@ -15,7 +17,7 @@ exports.signup = async (req, res) => {
       email,
       password,
       confirmPassword,
-    //   accountType,
+      accountType,
       contactNumber,
       otp,
     } = req.body;
@@ -28,7 +30,7 @@ exports.signup = async (req, res) => {
       !confirmPassword ||
       !otp
     ) {
-      return res.status(403).send({
+      return res.status(403).json({
         success: false,
         message: "All Field are Required",
       });
@@ -37,7 +39,7 @@ exports.signup = async (req, res) => {
     if (password !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: "Password and confirm password do not match.plese fill same",
+        message: "Password and confirm password does not match.plese fill same",
       });
     }
 
@@ -56,7 +58,7 @@ exports.signup = async (req, res) => {
     if (response.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "The OTP is not valid",
+        message: "The OTP is not found",
       });
     } else if (otp !== response[0].otp) {
       return res.status(400).json({
@@ -83,7 +85,8 @@ exports.signup = async (req, res) => {
       email,
       contactNumber,
       password: hashedPassword,
-    //   accountType: accountType,
+      accountType: accountType,
+      additionalDetails: profileDetails._id,
       approved: approved,
       image: `https://api.dicebear.com/6.x/initials/svg?seed=${firstName} ${lastName}&backgroundColor=00897b,00acc1,039be5,1e88e5,3949ab,43a047,5e35b1,7cb342,8e24aa,c0ca33,d81b60,e53935,f4511e,fb8c00,fdd835,ffb300,ffd5dc,ffdfbf,c0aede,d1d4f9,b6e3f4&backgroundType=solid,gradientLinear&backgroundRotation=0,360,-350,-340,-330,-320&fontFamily=Arial&fontWeight=600`,
     });
@@ -102,33 +105,69 @@ exports.signup = async (req, res) => {
   }
 };
 
-// exports.login = async (req,res) => {
-//     try{
+exports.login = async (req, res) => {
+  
+    try{
 
-//         const{ email, password } =  req.body;
+          const { email, password} = req.body;
 
-//         if(!email || !password){
-//             return res.status(400).json({
-//                 success: false,
-//                 message: `Plese Fill up All the Requied Fields`,
-//             });
-//         }
+          if(!email || !password){
+            return res.status(400).json({
+              success: false,
+              message: `Plese Fill up all the required fields`,
+            });
+          };
 
-//         const user = await User.findOne({ email }).populate("additionDetails");
+          const user = await User.findOne({email});
 
-//         if(!user){
-//             return res.status(401).json({
-//                 success: false,
-//                 message: `User is not Registered with Us Plese SignUp to Continue`,
-//             });
-//         }
+          if(!user){
+            return res.status(401).json({
+              success: false,
+              message: "User is not Registered With Us Plese Signup to Continue",
+            });
+          };
 
-//         if(await bcrypt.compare(password, user.password)){
-//             const token = jwt.sign(
-//               {email: user.email, id: user._id,})
-//         }
-//     }
-// };
+          if(await bcrypt.compare(password, user.password)){
+
+            const token = jwt.sign(
+              {email: user.email, id: user._id, accountType: user.accountType},
+              process.env.JWT_SECRET,
+              {
+                expiresIn: "24h",
+              }
+            );
+
+            user.token = token;
+            user.password= undefined;
+
+            const options = {
+              expires : new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+              httpOnly: true,
+            };
+
+            res.cookie("token",token,options).status(200).json({
+              success: true,
+              token,
+              user,
+              message: `User Login success`,
+            })
+          }
+          else{
+            return res.status(401).json({
+              success: false,
+              message: `Password is incorrect`
+            });
+          }
+    }
+    catch(error){
+        console.error(error);
+
+        return res.status(500).json({
+          success: false,
+          message: `Login failure plese Try Again`,
+        });
+    }
+};
 
 
 exports.sendotp = async (req, res) => {
@@ -156,6 +195,8 @@ exports.sendotp = async (req, res) => {
     while (result) {
       otp = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
+        lowerCaseAlphabets: false,
+        specialChars: false,
       });
     }
 
@@ -172,6 +213,85 @@ exports.sendotp = async (req, res) => {
     console.log(error.message);
     return res.status(500).json({
       success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
+exports.changePassword = async (req, res) => {
+
+  try{
+
+    const userDetails = await User.findById(req.user.id);
+    const { oldPassword,newPassword, confirmPassword} = req.body;
+
+    const isPasswordMatch = await bcrypt.compare(
+      oldPassword,
+      userDetails.password
+    );
+
+    if(oldPassword === newPassword){
+      return res.status(400).json({
+        success: false,
+        message: "New Password cannot be same as old Password",
+      });
+    }
+
+    if(!isPasswordMatch){
+      return res.status(401).json({
+        success: false,
+        message: "The password is incorrect"
+      });
+    }
+
+    if(newPassword !== confirmPassword){
+      return res.status(400).json({
+        success: false,
+        message: "The Password and confirm password do not match",
+      });
+    }
+
+    const encryptedPassword = await bcrypt.hash(newPassword,15);
+    const updatedUserdetails = await User.findByIdAndUpdate(
+      req.user.id,
+      {password: encryptedPassword},
+      {new: true}
+    );
+
+    try{
+      const emailResponse = await mailSender(
+        updatedUserdetails.email,
+        "Study Notion - Password Updated",
+        passwordUpdated(
+          updatedUserdetails.email,
+          `Password updated successfully for ${updatedUserdetails.firstName} ${updatedUserdetails.lastName}`
+        )
+      );
+
+      console.log("Email Sent successfully: ",emailResponse);
+    }catch(error){
+      console.error("Error occurred while sending email:",error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Error occurred while sending email",
+        error:  error.message,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully"
+    });
+  }catch(error){
+
+    console.log("Error occured while updating passwor:",error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error occured while updating password",
       error: error.message,
     });
   }
