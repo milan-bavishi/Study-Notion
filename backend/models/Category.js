@@ -19,3 +19,4 @@ const categorySchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.Model("Category",categorySchema);
+
