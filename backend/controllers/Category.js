@@ -49,3 +49,28 @@ exports.showAllCategories = async (req,res) => {
 		});
     }
 } 
+
+exports.CategoryPageDetails = async (req,res) => {
+    try{
+        const{ categoryId} = req.body;
+    }catch(error){
+        return res.status(500).json({
+            success: false,
+            message: "Interna; server error",
+            error: error.message,
+        })
+    }
+}
+
+
+exports.addCourseToCategory = async (req,res) => {
+    try{
+
+    }catch(error){
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+}

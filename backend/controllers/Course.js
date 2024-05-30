@@ -161,3 +161,170 @@ exports.getAllCourses = async (req,res) => {
     }
 };
 
+exports.getCourseDetails = async (req,res) => {
+
+    try{
+        const{courseId} = req.body;
+
+        const courseDetails = await Course.find({_id: courseId}).populate({path:"instructor",
+            populate:{path:"additionalDetails"}})
+            .populate("category")
+            .populate({
+                path: "ratingAndReviews",
+                populate:{path:"user"
+                    ,select: "firstName lastName accountTpe image"}
+            }).populate({path: "courseContent",populate:{path:"subSection"}})
+            .exec();
+
+
+        if(!courseDetails){
+            return res.status(404).json({
+                success: false,
+                message: "Course Not Found"
+            });    
+        };
+        
+        return res.status(200).json({
+            success: true,
+            message: "Course fetched successfully now",
+            data: courseDetails
+        });
+    }catch(error){
+        console.error(error);
+        return res.status(404).json({
+            success: false,
+            message: `Can't Fetch Couses Data`,
+            error: error.message
+        })
+    }
+} 
+
+
+//Function to get all couses of a particular instructor
+exports.getInstructorCourses = async (req,res) => {
+    try{
+        const userId = req.user.id;
+        const allCourses = await Course.find({instructor: userId});
+
+        res.status(200).json({
+            success: true,
+            data: allCourses
+        });
+    }catch(error){
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch courses",
+            error: error.message;
+        })
+    }
+}
+
+
+//edit courses
+exports.editCourse = async (req,res) => {
+    try{
+        const { courseId} = req.body;
+        const updates = req.body;
+
+        const course = await Course.findById(courseId);
+
+        if(!course){
+            return res.status(404).json({
+                error: "Course not found"
+            });
+        };
+
+        //If thumbnail image is found update it
+        if(req.files){
+            console.log("thumbnail update");
+            const thumbnail = req.files.thumbnailImage,
+            const thumbnailImage = await uploadImageToCloudinary(
+                thumbnail,
+                process.env.FOLDER_NAME
+            )
+            course.thumbnail = thumbnailImage.secure_url;
+        }
+            
+        //this is understand is baki
+        // Update only the fields that are present in the request body
+	    for (const key in updates) {
+		    if (updates.hasOwnProperty(key)) {
+                if (key === "tag" || key === "instructions") {
+			course[key] = JSON.parse(updates[key])
+		    } else {
+			course[key] = updates[key]
+		    }
+		    }
+	    }
+
+        await course.save();
+
+        const updatedCourse = await Course.findOne({
+            _id: courseId,
+        })
+            .populate({
+                path: "instructor",
+                populate:{
+                    path: "additionalDetails",
+                },
+            })
+            .populate("category")
+            .populate("ratingAndReviews")
+            .populate({
+                path: "courseContent",
+                populate: {
+                    path: "subSection,"
+                },
+            })
+            .exec();
+
+            res.json({
+                success: true,
+                message: "Course updated successfully",
+                data: updatedCourse,
+            })
+            
+    }catch(error){
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server error",
+            error: error.message, 
+        })
+    }
+}
+
+//baki from here
+
+exports.getFullCourseDetails = async (req,res) => {
+    try{
+
+    }catch(){
+
+    }
+}
+
+exports.deleteCourse = async (req,res) => {
+    try{
+
+    }catch(){
+
+    }
+}
+
+exports.searchCourse = async (req,res) => {
+    try{
+
+    }catch(){
+
+    }
+}
+
+exports.markLectureAsComplete = async (req,res) => {
+    try{
+
+    }catch(){
+        
+    }
+}

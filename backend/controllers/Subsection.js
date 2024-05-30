@@ -67,3 +67,20 @@ exports.createSubSection = async (req,res) => {
         });
     }
 };
+
+//baki from here
+exports.updateSubSection = async (req,res) => {
+    try{
+
+    }catch(){
+
+    }
+}
+
+exports.deleteSubSection = async (req,res) => {
+    try{
+
+    }catch(){
+
+    }
+}
