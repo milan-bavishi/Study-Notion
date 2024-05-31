@@ -43,7 +43,7 @@ cloudinaryconnect();
 app.use("/api/auth",userRoutes);
 app.use("/api/contact",contactusRoutes);
 app.use("/api/payment",paymentRoutes);
-// app.use("/api/course",courseRoutes);
+app.use("/api/course",courseRoutes);
 app.use("/api/profile",profileRoutes);
 
   app.get("/", (req, res) => {
