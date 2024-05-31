@@ -52,7 +52,7 @@ exports.createCourse = async (req, res) => {
         if(!instructorDetails){
             return res.status(404).json({
                 success: false,
-                message: "Instructor Details Not Found";
+                message: "Instructor Details Not Found",
             })
         }
 
@@ -123,7 +123,7 @@ exports.createCourse = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Failed to create course",
-            error: error.message;
+            error: error.message,
         })
     }
 };
@@ -215,7 +215,7 @@ exports.getInstructorCourses = async (req,res) => {
         res.status(500).json({
             success: false,
             message: "Failed to fetch courses",
-            error: error.message;
+            error: error.message,
         })
     }
 }
@@ -238,7 +238,7 @@ exports.editCourse = async (req,res) => {
         //If thumbnail image is found update it
         if(req.files){
             console.log("thumbnail update");
-            const thumbnail = req.files.thumbnailImage,
+            const thumbnail = req.files.thumbnailImage;
             const thumbnailImage = await uploadImageToCloudinary(
                 thumbnail,
                 process.env.FOLDER_NAME

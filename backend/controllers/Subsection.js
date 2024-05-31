@@ -18,7 +18,7 @@ exports.createSubSection = async (req,res) => {
         ){
             return res.status(404).json({
                 success: false,
-                message; "All Fields are Required",
+                message: "All Fields are Required",
             });
         };
 
