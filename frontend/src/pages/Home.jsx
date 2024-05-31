@@ -1,9 +1,12 @@
-import React from "react";
+import React, { act } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import HignlightText from "../Components/core/HomePage/HighlightText";
 import CTAButton from "../Components/core/HomePage/Button"
 import Banner from "../assets/Images/banner.mp4"
+import CodeBlocks from "../Components/core/HomePage/CodeBlocks";
+import TimelineSection from "../Components/core/HomePage/TimelineSection";
+import LearningLanguageSection from "../Components/core/HomePage/LearningLanguageSection";
 function Home() {
     return(
         <div>
@@ -47,13 +50,122 @@ function Home() {
                 </div>
 
                 <div>
+                    <CodeBlocks
+                    position={"lg:flex-row"}
+                    heading={
+                        <div className="font-semiblod text-2xl lg:text-4xl sm:w-full">
+                            Unlock Your
+                            <HignlightText text={"Coding Potential "}/>
+                             with our online courses
+                        </div>
+                    }
+                    subheading={
+                        "Our courses are designed and taught by industry experts who have year of experience in coding and are passionate about sharing their knoeledge with yoy."
+                    }
+                    ctabtn1={
+                        {
+                            btnText: "Try it Yourself",
+                            linkto: "/signup",
+                            active: true,
+                        }
+                    }
+                    ctabtn2={
+                        {
+                            btnText: "learn more",
+                            linkto: "/login",
+                            active: false,
+                        }
+                    }
                     
+                    codeblock={`<<!DOCTYPE html>\n<html>\n<head><title>Example</title>\n</head>\n<body>\n<h1><ahref="/">Header</a>\n</h1>\n<nav><ahref="one/">One</a><ahref="two/">Two</a><ahref="three/">Three</a>\n</nav>`}
+                    codeColor={"white"}
+                    backgroundGradient={"grad"}>
+                    </CodeBlocks>
                 </div>
 
+                <div>
+                <CodeBlocks 
+                position={"lg:flex-row-reverse"}
+                heading={
+                    <div className='text-4xl font-semibold'>
+                        Start
+                        <HignlightText text={"coding in seconds"}/>
+                    </div>
+                }
+                subheading = {
+                    "Go ahead, give it a try. Our hands-on learning environment means you'll be writing real code from your very first lesson."
+                }
+                ctabtn1={
+                    {
+                        btnText: "Continue Lesson",
+                        linkto: "/signup",
+                        active: true,
+                    }
+                }
+                ctabtn2={
+                    {
+                        btnText: "learn more",
+                        linkto: "/login",
+                        active: false,
+                    }
+                }
+
+                codeblock={`<<!DOCTYPE html>\n<html>\n<head><title>Example</title>\n</head>\n<body>\n<h1><ahref="/">Header</a>\n</h1>\n<nav><ahref="one/">One</a><ahref="two/">Two</a><ahref="three/">Three</a>\n</nav>`}
+                codeColor={"text-yellow-25"}
+                backgroudGradient={"grad2"}
+            />
+                </div>
             </div>
 
             {/*Section 2 */}
+            <div className="bg-pure-greys-5 text-richblack-700">
+                <div className="homepage_bg h-[310px]">
+                    <div className="w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-5 mx-auto">
+                        <div className="h-[150px]"></div>
+                        <div className="flex flex-row gap-7 text-white">
+                        <CTAButton active={true} linkto={"/catalog/web Developement"}>
+                            <div className="flex items-center gap-3">
+                                Explore Full Catalog
+                                <FaArrowRight/>
+                            </div>
+                            </CTAButton>
 
+                        <CTAButton active={false} linkto={"/signup"}>
+                        <div>
+                            Learn more
+                        </div>
+                        </CTAButton>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mx-auto w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-7">
+
+                    <div className="flex flex-row gap-5 mb-10 mt-[95px]">
+                        <div className="text-4xl font-semibold w-[45%]">
+                            Get the Skill you need for a
+                            <HignlightText text={"Job that is in demand"}/>
+                        </div>
+
+                        <div className="flex flex-col gap-10 w-[40%] items-start">
+                            <div className="text-[16px]">
+                                The modern StudyNotion is the disctates its own terms. Today, to be a competitive specialist requires more than professional skills. 
+                            </div>
+                            <CTAButton active={true} linkto={"/signup"}>
+                                <div>
+                                    Learn more
+                                </div>
+                            </CTAButton>    
+                        </div>
+                    </div>
+
+                    {/*timelinesection*/}
+                    
+                    <TimelineSection/>
+                    <LearningLanguageSection/>
+                    {/*Learn lamguage section*/}
+                </div>
+            </div>    
             {/*Section 3 */}
 
             {/*Section 4 */}
