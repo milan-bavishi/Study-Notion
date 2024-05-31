@@ -4,8 +4,8 @@ const app = express();
 const contactusRoutes = require("./routes/Contactus")
 const userRoutes = require("./routes/User");
 const paymentRoutes = require("./routes/Payments");
-const profileRoutes = require("./routes/Profile");
-const courseRoutes = require("./routes/Course");
+// const profileRoutes = require("./routes/Profile");
+// const courseRoutes = require("./routes/Course");
 
 const Database = require("./config/Database");
 const cookieParser = require("cookie-parser");
@@ -43,8 +43,8 @@ cloudinaryconnect();
 app.use("/api/auth",userRoutes);
 app.use("/api/contact",contactusRoutes);
 app.use("/api/payment",paymentRoutes);
-app.use("/api/course",courseRoutes);
-app.use("/api/profile",profileRoutes);
+// app.use("/api/course",courseRoutes);
+// app.use("/api/profile",profileRoutes);
 
   app.get("/", (req, res) => {
     res.status(200).json({
