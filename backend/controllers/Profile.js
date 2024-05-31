@@ -95,7 +95,7 @@ exports.getallUserDetails = async (req,res) => {
     }
 }
 
-//baki from here
+
 exports.getEnrolledCourses = async (req,res) => {
 
     try{

@@ -5,7 +5,7 @@ const CourseProgress = require("../models/CourseProgress")
 const Section = require("../models/Section")
 const SubSection = require("../models/SubSection")
 const {uploadImageToCloudinary} = require("../utils/imageUploader")
-
+const { convertSecondsToDuration}= require("../utils/secToDuration");
 
 exports.createCourse = async (req, res) => {
 
@@ -299,32 +299,207 @@ exports.editCourse = async (req,res) => {
 
 exports.getFullCourseDetails = async (req,res) => {
     try{
+            const {courseId} = req.body;
+            const userId = req.user.id;
+            const  courseDetails = await Course.findOne({
+                _id: courseId,
+            }).populate({
+                path: "instructor",
+                populate: {
+                    path: "additionalDetails",
+                },
+            })
+            .populate("category")
+            .populate("ratingAndReviews")
+            .populate({
+                path: "courseContent",
+                populate: {
+                    path: "subSection",
+                },
+            }).exec()
 
-    }catch(){
+            let courseProgressCount = await CourseProgress.findOne({
+                courseID: courseId,
+                userID: userId,
+            }) 
 
+            console.log("courseProgressCount :", courseProgressCount)
+
+            if(!courseDetails){
+                return res.status(400).json({
+                    success: false,
+                    message: `Could not find course with id: ${courseId}`,
+                })
+            }
+
+            let totalDurationInSeconds = 0
+	    courseDetails.courseContent.forEach((content) => {
+		        content.subSection.forEach((subSection) => {
+		    const timeDurationInSeconds = parseInt(subSection.timeDuration)
+		    totalDurationInSeconds += timeDurationInSeconds;
+		    })
+	    })
+  
+	        const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+  
+	    return res.status(200).json({
+		    success: true,
+		    data: {
+		    courseDetails,
+		    totalDuration,
+		    completedVideos: courseProgressCount?.completedVideos
+			    ? courseProgressCount?.completedVideos
+			    : ["none"],
+		    },
+	    })
+        }catch(error){
+            return res.status(500).json({
+                success: false,
+                message: error.message,
+            })
     }
 }
 
 exports.deleteCourse = async (req,res) => {
     try{
+        const {courseId} = req.body;
 
-    }catch(){
+        const course = await Course.findById(courseId);
 
-    }
-}
+        if(!course){
+            return res.status(404).json({
+                message: "Course not found",
+            })
+        }
 
-exports.searchCourse = async (req,res) => {
-    try{
-
-    }catch(){
-
-    }
-}
-
-exports.markLectureAsComplete = async (req,res) => {
-    try{
-
-    }catch(){
+        //unenroll student from the course
+        const studentEnrolled = course.studentsEnrolled
         
+        for(const studentID of studentEnrolled ){
+            await User.findByIdAndUpdate(studentID,{
+                $pull: {courses: courseId},
+            })
+        }
+
+        //Delete section and subsection
+        const courseSections = course.courseContent
+
+        for(const sectionId of courseSections){
+            const section = await Section.findById(sectionId)
+            if(section){
+                const subSections = section.subSection
+                for(const subSectionId of subSections){
+                    await SubSection.findByIdAndDelete(subSectionId) 
+                }
+            }
+
+            await Section.findByIdAndDelete(sectionId)
+        }
+
+        //detele the course
+        await Course.findByIdAndDelete(courseId);
+
+        await Category.findByIdAndUpdate(course.category._id,{
+            $pull: {course: courseId},
+        })
+
+        await User.findByIdAndUpdate(course.instructor._id,{
+            $pull: {courses: courseId},
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "Course deleted successfully",
+        })
+    }catch(error){
+        console.error(error)
+        return res.status(500).json({
+            success: false,
+            message: "Server Error",
+            error: error.message
+        })
     }
+}
+
+//sikhvanu ayathi baki
+exports.searchCourse = async (req, res) => {
+	try {
+	    const  { searchQuery }  = req.body
+	    //   console.log("searchQuery : ", searchQuery)
+	    const courses = await Course.find({
+		    $or: [
+		    { courseName: { $regex: searchQuery, $options: "i" } },
+		    { courseDescription: { $regex: searchQuery, $options: "i" } },
+		    { tag: { $regex: searchQuery, $options: "i" } },
+		],
+    })
+    .populate({
+	    path: "instructor",  })
+        .populate("category")
+  .populate("ratingAndReviews")
+  .exec();
+
+  return res.status(200).json({
+	success: true,
+	data: courses,
+	  })
+	} catch (error) {
+	  return res.status(500).json({
+		success: false,
+		message: error.message,
+	  })
+	}		
+}					
+
+//mark lecture as completed
+exports.markLectureAsComplete = async (req, res) => {
+	const { courseId, subSectionId, userId } = req.body
+	if (!courseId || !subSectionId || !userId) {
+	  return res.status(400).json({
+		success: false,
+		message: "Missing required fields",
+	  })
+	}
+	try {
+	progressAlreadyExists = await CourseProgress.findOne({
+				  userID: userId,
+				  courseID: courseId,
+				})
+	  const completedVideos = progressAlreadyExists.completedVideos
+	  if (!completedVideos.includes(subSectionId)) {
+		await CourseProgress.findOneAndUpdate(
+		  {
+			userID: userId,
+			courseID: courseId,
+		  },
+		  {
+			$push: { completedVideos: subSectionId },
+		  }
+		)
+	  }else{
+		return res.status(400).json({
+			success: false,
+			message: "Lecture already marked as complete",
+		  })
+	  }
+	  await CourseProgress.findOneAndUpdate(
+		{
+		  userId: userId,
+		  courseID: courseId,
+		},
+		{
+		  completedVideos: completedVideos,
+		}
+	  )
+	return res.status(200).json({
+	  success: true,
+	  message: "Lecture marked as complete",
+	})
+	} catch (error) {
+	  return res.status(500).json({
+		success: false,
+		message: error.message,
+	  })
+	}
+
 }
