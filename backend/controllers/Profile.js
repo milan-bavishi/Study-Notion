@@ -80,8 +80,10 @@ exports.getallUserDetails = async (req,res) => {
 
     try{
         const id = req.user.id;
+        console.log("here")
         const userDetails = await User.findById(id).populate("additionalDetails").exec();
         console.log(userDetails);
+        console.log("here2")
         res.status(200).json({
             success: true,
             message: "User Data fetched successfully",
@@ -142,7 +144,7 @@ exports.updateDisplayPicture = async (req,res) => {
             });
         }
 
-        const image = req.files.pfp;
+        const image = req.files.displayPicture;
 
         if(!image){
             return res.status(404).json({

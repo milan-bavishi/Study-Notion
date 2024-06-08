@@ -10,12 +10,12 @@ const { convertSecondsToDuration}= require("../utils/secToDuration");
 exports.createCourse = async (req, res) => {
 
     try{
-
+        
         //Get userID from request object
         const userId = req.user.id;
 
         //All data
-        const {courseName,
+        let {courseName,
                 courseDescription,
                 whatYouwillLearn,
                 price,
@@ -23,7 +23,7 @@ exports.createCourse = async (req, res) => {
                 category,
                 status,
                 instructions} = req.body;
-
+                console.log("Here");
         const thumbnail =req.files.thumbnailImage;
         
         if(
@@ -40,7 +40,7 @@ exports.createCourse = async (req, res) => {
                 message: "All Fields are Mandatory",
             });
         }
-
+       
         if (!status || status === undefined) {
 			status = "Draft";
 		}
@@ -64,7 +64,7 @@ exports.createCourse = async (req, res) => {
                 message: "Category Details Not found",
             });
         };
-
+        console.log("Here");
         const thumbnailImage = await uploadImageToCloudinary(
             thumbnail,
             process.env.FOLDER_NAME

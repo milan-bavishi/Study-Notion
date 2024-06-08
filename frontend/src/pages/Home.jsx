@@ -1,4 +1,4 @@
-import React, { act } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import HignlightText from "../Components/core/HomePage/HighlightText";
@@ -7,6 +7,9 @@ import Banner from "../assets/Images/banner.mp4"
 import CodeBlocks from "../Components/core/HomePage/CodeBlocks";
 import TimelineSection from "../Components/core/HomePage/TimelineSection";
 import LearningLanguageSection from "../Components/core/HomePage/LearningLanguageSection";
+import InstructorSection from "../Components/core/HomePage/InstructorSection"
+import ExploreMore from "../Components/core/HomePage/ExploreMore"
+import Footer from "../Components/common/Footer"
 function Home() {
     return(
         <div>
@@ -115,6 +118,8 @@ function Home() {
                 backgroudGradient={"grad2"}
             />
                 </div>
+
+                <ExploreMore/>
             </div>
 
             {/*Section 2 */}
@@ -168,7 +173,13 @@ function Home() {
             </div>    
             {/*Section 3 */}
 
+
+            <div className="w-11/12 mx-auto max-w-maxContent flex-col items-center justify-between gap-8 first-letter bg-richblack-900 text-white">
+                    <InstructorSection/>
+            </div>        
             {/*Section 4 */}
+
+            <Footer/>
         </div>
     )
 }

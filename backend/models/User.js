@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
         additionalDetails:{
             type: mongoose.Schema.Types.ObjectId,
             require: true,
-            ref: "profile",
+            ref: "Profile",
         },
         courses: [
             {
