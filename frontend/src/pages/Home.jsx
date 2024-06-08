@@ -10,9 +10,12 @@ import LearningLanguageSection from "../Components/core/HomePage/LearningLanguag
 import InstructorSection from "../Components/core/HomePage/InstructorSection"
 import ExploreMore from "../Components/core/HomePage/ExploreMore"
 import Footer from "../Components/common/Footer"
+import NavBar from "../Components/common/NavBar";
 function Home() {
     return(
+        
         <div>
+        
             {/*Section 1 */}
 
             <div className="mx-auto relative flex flex-col w-11/12 items-center
