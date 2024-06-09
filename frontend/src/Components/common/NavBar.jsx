@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux'
 import { useDispatch } from 'react-redux'
 import {useLocation} from 'react-router-dom'
 import {TiShoppingCart} from 'react-icons/ti'
-import PrivateRoute from "../core/Auth/ProfileDropDown"
+import ProfileDropDown from '../core/Auth/ProfileDropDown'
 import { categories } from '../../services/apis'
 import { apiConnector } from '../../services/apiConnector'
 
@@ -130,7 +130,7 @@ const NavBar = () => {
                     {
                         token !== null && (
                             <div className="pt-2">
-                                {/* <ProfileDropDown/> */}
+                                <ProfileDropDown/>
                             </div>
                         )
                     }

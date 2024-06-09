@@ -47,7 +47,7 @@ export function sendOtp(email, navigate) {
 }
 
 
-export function singUp(
+export function signUp(
     accountType,
     firstName,
     lastName,
