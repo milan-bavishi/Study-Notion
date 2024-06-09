@@ -10,7 +10,7 @@ import {setProgress} from "../../slices/loadingBarSlice"
 const {SENDOTP_API,
     SIGNUP_API,
     LOGIN_API,
-    RESETPASSWORDTOKEN_API,
+    RESETPASSTOKEN_API,
     RESETPASSWORD_API
 } = endpoints
 
@@ -136,7 +136,7 @@ export function getPasswordResetToken(email, setEmailSent){
         const toastId = toast.loading("Loading...")
         dispatch(setLoading(true))
         try{
-            const response = await apiConnector("POST", RESETPASSWORDTOKEN_API,{
+            const response = await apiConnector("POST", RESETPASSTOKEN_API,{
                 email,
             })
 
@@ -206,8 +206,8 @@ export function forgotPassword(email,setEmailSend){
         dispatch(setLoading(true))
 
         try{
-            const response = await apiConnector("POST",RESETPASSWORDTOKEN_API,{
-                email
+            const response = await apiConnector("POST",RESETPASSTOKEN_API,{
+                email,
             })
 
             console.log("Forgotpassword response...",response)

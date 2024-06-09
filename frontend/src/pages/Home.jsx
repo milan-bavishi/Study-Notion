@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { useDispatch } from 'react-redux';
+import { setProgress } from "../slices/loadingBarSlice"
 import HignlightText from "../Components/core/HomePage/HighlightText";
 import CTAButton from "../Components/core/HomePage/Button"
 import Banner from "../assets/Images/banner.mp4"
@@ -11,7 +13,11 @@ import InstructorSection from "../Components/core/HomePage/InstructorSection"
 import ExploreMore from "../Components/core/HomePage/ExploreMore"
 import Footer from "../Components/common/Footer"
 import NavBar from "../Components/common/NavBar";
+
+
 function Home() {
+
+    const dispatch = useDispatch();
     return(
         
         <div>
@@ -21,7 +27,7 @@ function Home() {
             <div className="mx-auto relative flex flex-col w-11/12 items-center
             text-white justify-between  ">
 
-                <Link to={"/signup"}>
+                <Link onClick={()=>{dispatch(setProgress(100))}} to={"/signup"}>
                     <div className=" group mt-16 p-1 mx-auto rounded-full bg-richblack-800
                     font-bold transition-all duration-200 hover:scale-95 w-fit max-w-maxContent">
                         <div className="flex flex-row items-center gap-2 rounded-full px-10 py-[5px] transition-all duration-200 group-hover:bg-richblack-900">
