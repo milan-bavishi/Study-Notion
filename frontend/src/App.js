@@ -6,10 +6,13 @@ import Footer from "./Components/common/Footer";
 import Login from "./pages/Login"
 import Error from "./pages/Error"
 import Signup from "./pages/Signup";
+import ContactUs from "./pages/ContactUs"
+import About from "./pages/About";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 import VerifyOtp from "./pages/VerifyOtp";
+import Dashboard from "./pages/Dashboard";
 import Under from "./Components/common/Under";
 import LoadingBar from "react-top-loading-bar";
 import { setProgress } from "./slices/loadingBarSlice";
@@ -20,6 +23,9 @@ import PrivateRoute from "./Components/core/Auth/PrivateRoute";
 import { ACCOUNT_TYPE } from "./utils/constants";
 import { RiWifiOffLine } from "react-icons/ri";
 import ScrollToTop from "./Components/ScrollToTop";
+import MyProfile from "./Components/core/Dashboard/MyProfile";
+import Setting from "./Components/core/Dashboard/Settings";
+import EnrollledCourses from "./Components/core/Dashboard/EnrolledCourses";
 
 function App() {
 
@@ -66,11 +72,46 @@ function App() {
           element={<OpenRoute><Signup/></OpenRoute>}/>
 
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
+
           <Route path="/update-password/:id" element={<UpdatePassword/>}/>
+
           <Route path="/verify-email" element={<VerifyOtp/>}/>
 
+          <Route path="/contact" element={<ContactUs/>}/>
+
+          <Route path="/about" element={<About/>}/>
+
+          <Route
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        >
+          <Route path="dashboard/my-profile" element={<MyProfile />} />
+          <Route path="dashboard/settings" element={<Setting />} />
+          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+            <>
+              {/* <Route path="dashboard/cart" element={<Cart />} /> */}
+              <Route
+                path="dashboard/enrolled-courses"
+                element={<EnrollledCourses />}
+              />
+              {/* <Route
+                path="dashboard/purchase-history"
+                element={<PurchaseHistory />}
+              /> */}
+            </>
+          )}
+        </Route>
+          
+
+          {/* <Route path="dashboard/settings" element={<Setting />} /> */}
+
           <Route path="*" element={<Error />} />
+
       </Routes>
+      <Footer/>
       
     </div>
   );

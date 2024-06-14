@@ -225,7 +225,7 @@ exports.changePassword = async (req, res) => {
   try{
 
     const userDetails = await User.findById(req.user.id);
-    const { oldPassword,newPassword, confirmPassword} = req.body;
+    const { oldPassword,newPassword, confirmNewPassword} = req.body;
 
     const isPasswordMatch = await bcrypt.compare(
       oldPassword,
@@ -246,7 +246,7 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    if(newPassword !== confirmPassword){
+    if(newPassword !== confirmNewPassword){
       return res.status(400).json({
         success: false,
         message: "The Password and confirm password do not match",

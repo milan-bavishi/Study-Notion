@@ -187,8 +187,6 @@ function Home() {
                     <InstructorSection/>
             </div>        
             {/*Section 4 */}
-
-            <Footer/>
         </div>
     )
 }
