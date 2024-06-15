@@ -21,7 +21,7 @@ export async function getUserCourses(token,dispatch) {
                 Authorisation: `Bearer ${token}`,
             }
         )
-
+        toast.success("Courses Fetch Successfully");
         console.log("Enrolled Courses API called");
 
         if(!response.data.success){
