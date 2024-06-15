@@ -26,6 +26,11 @@ import ScrollToTop from "./Components/ScrollToTop";
 import MyProfile from "./Components/core/Dashboard/MyProfile";
 import Setting from "./Components/core/Dashboard/Settings";
 import EnrollledCourses from "./Components/core/Dashboard/EnrolledCourses";
+import InstructorDashboard from "./Components/core/Dashboard/InstructorDashboard/InstructorDashboard";
+import AddCourse from "./Components/core/Dashboard/AddCourse/index";
+import MyCourses from "./Components/core/Dashboard/MyCourses/MyCourses";
+import EditCourse from "./Components/core/Dashboard/EditCourse.jsx/EditCourse";
+import Cart from "./Components/core/Dashboard/Cart/index";
 
 function App() {
 
@@ -101,6 +106,21 @@ function App() {
                 path="dashboard/purchase-history"
                 element={<PurchaseHistory />}
               /> */}
+            </>
+          )}
+
+          {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
+            <>
+              <Route path="dashboard/add-course" element={<AddCourse />} />
+              <Route path="dashboard/my-courses" element={<MyCourses />} />
+              <Route
+                path="dashboard/edit-course/:courseId"
+                element={<EditCourse />}
+              />
+              <Route
+                path="dashboard/instructor"
+                element={<InstructorDashboard />}
+              />
             </>
           )}
         </Route>
