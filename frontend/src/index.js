@@ -7,7 +7,7 @@ import {Provider} from "react-redux"
 import { Toaster } from "react-hot-toast";
 import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "./reducers"
-
+import swDev from "./swDev";
 const store= configureStore({
   reducer: rootReducer,
 });
@@ -21,4 +21,4 @@ root.render(
   </BrowserRouter>
   </Provider>
 );
-
+swDev();

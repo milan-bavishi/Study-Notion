@@ -168,7 +168,7 @@ export const createSubSection = async (data,token) => {
 
     try{
         const response = await apiConnector("POST", CREATE_SUBSECTION_API,data,{
-            Authorisation: `Bearer token`,
+            Authorisation: `Bearer ${token}`,
         });
         console.log("Create Sub-Section API Response...",response);
         if(!response?.data?.success){
