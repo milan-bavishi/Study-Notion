@@ -31,6 +31,7 @@ import AddCourse from "./Components/core/Dashboard/AddCourse/index";
 import MyCourses from "./Components/core/Dashboard/MyCourses/MyCourses";
 import EditCourse from "./Components/core/Dashboard/EditCourse.jsx/EditCourse";
 import Cart from "./Components/core/Dashboard/Cart/index";
+import Catalog from "./pages/Catalog";
 
 function App() {
 
@@ -67,7 +68,7 @@ function App() {
         {/*Routes For here*/}
       <Routes>
           <Route path="/" element={<Home/>}/>
-
+          <Route path="/catalog/:catalog" element={<Catalog />} />
           <Route
           path="/login"
           element={<OpenRoute><Login/></OpenRoute>}/>
