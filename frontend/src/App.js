@@ -32,6 +32,7 @@ import MyCourses from "./Components/core/Dashboard/MyCourses/MyCourses";
 import EditCourse from "./Components/core/Dashboard/EditCourse.jsx/EditCourse";
 import Cart from "./Components/core/Dashboard/Cart/index";
 import Catalog from "./pages/Catalog";
+import AdminPannel from "./Components/core/Dashboard/AdminPannel";
 
 function App() {
 
@@ -124,6 +125,13 @@ function App() {
               />
             </>
           )}
+
+          {user?.accountType === ACCOUNT_TYPE.ADMIN && (
+            <>
+              <Route path="dashboard/admin-panel" element={<AdminPannel />} />
+            </>
+          )}
+          
         </Route>
           
 
