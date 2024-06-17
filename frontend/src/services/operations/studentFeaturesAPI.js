@@ -59,12 +59,70 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
             },
             handler : async function(response){
                 console.log("buyCourse -> response", response);
-
+                sendPaymentSuccessEmail(response,orderResponse.data.amount,token);
+                verifypament(response,courses,token,navigate,dispatch);
+            },
+            theme: {
+                color : "#686CFD",
             }
-        }
+        };
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+        paymentObject.on("payment.failed", function (response) {
+            toast.error("Payment Failed");
+        });
+        toast.dismiss(toastId);
     }catch(error){
         toast.dismiss(toastId);
         toast.error("Something Went Wrong");
         console.log("BuyCourse -> Error",error)
     }
+}
+
+
+async function sendPaymentSuccessEmail(response,amount,token){
+
+    const res = await apiConnector("POST",SEND_PAYMENT_SUCCESS_EMAIL_API,{
+        amount,
+        paymentId:response.razorpay_payment_id,
+        orderId:response.razorpay_order_id,
+    },{
+        Authorisation: `Bearer ${token}`,
+    });
+    if(!res.success){
+        console.log(res.message);
+        toast.error(res.message);
+    }
+}
+
+async function verifypament (response,courses,token,navigate,dispatch){
+
+    const toastId = toast.loading("Plese Wait While We Verify Your Payment");
+    console.log("Verifypayment ->> courses",courses.courses);
+
+    try{
+        const res = await apiConnector("POST",COURSE_VERIFY_API,{
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_signature: response.razorpay_signature,
+            courses:courses.courses || courses,
+        },{
+            Authorisation: `Bearer ${token}`,
+        });
+        console.log("Verify Payment ->> res",res)
+
+        if(!res.data.success){
+            toast.error(res.message);
+            return;
+        }
+
+        toast.success("Payment Successfull");
+        navigate("/dashboard/enrolled-courses");
+        dispatch(resetCart());
+    }catch(err){
+        toast.error("Payment Failed");
+        console.log(err);
+    }
+
+    toast.dismiss(toastId);
 }

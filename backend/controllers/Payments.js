@@ -7,6 +7,7 @@ const { paymentSuccess } = require("../mail/templates/paymentSuccess");
 const { default: mongoose } = require("mongoose");
 const CourseProgress = require("../models/CourseProgress");
 
+
 exports.capturePayment = async (req,res) => {
 
     const {courses} = req.body;
