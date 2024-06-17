@@ -1,0 +1,70 @@
+import { apiConnector } from "../apiConnector";
+import { studentEndpoints } from "../apis";
+import { toast } from "react-hot-toast";
+import rzplogo from "../../assets/Images/rzp.png";
+import { resetCart } from "../../slices/cartSlice";
+const { COURSE_PAYMENT_API, COURSE_VERIFY_API, SEND_PAYMENT_SUCCESS_EMAIL_API } = studentEndpoints;
+
+function loadScript(src) {
+    return new Promise( (resolve) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = () => {
+            resolve(true);
+        };
+        script.onerror = () => {
+            resolve(false);
+        };
+        document.body.appendChild(script);
+    });
+}
+
+export async function buyCourse(token, courses, userDetails, navigate, dispatch){
+
+    const toastId = toast.loading("Plese Wait While We Redirect You To Payment Gateway",{
+        position: "bottom-center",
+        autoClose: false,
+    });
+
+    try{
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+        if(!res){
+            toast.error("Razorpay SDK Failed to load. Are You online?");
+            return;
+        }
+
+        const orderResponse = await apiConnector("POST",COURSE_PAYMENT_API,{courses},{
+            Authorisation: `Bearer ${token}`,
+        })
+
+        if(!orderResponse.data.success){
+            toast.error(orderResponse.data.message);
+            console.log("BuyCourse ->> orderResponse",orderResponse);
+            toast.dismiss(toastId);
+            return
+        }
+        console.log("Buy Course ->> orderResponse",orderResponse);
+        const options = {
+            key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+            currency : orderResponse.data.currency,
+            amount : orderResponse.data.amount.toString(),
+            order_id : orderResponse.data.orderId,
+            name : "Study Notion",
+            description : "Thank You For Purchasing The Course",
+            image : rzplogo,
+            presill: {
+                name : userDetails?.firstName + " " + userDetails?.lastName,
+                email : userDetails?.email,
+            },
+            handler : async function(response){
+                console.log("buyCourse -> response", response);
+
+            }
+        }
+    }catch(error){
+        toast.dismiss(toastId);
+        toast.error("Something Went Wrong");
+        console.log("BuyCourse -> Error",error)
+    }
+}

@@ -33,7 +33,7 @@ import EditCourse from "./Components/core/Dashboard/EditCourse.jsx/EditCourse";
 import Cart from "./Components/core/Dashboard/Cart/index";
 import Catalog from "./pages/Catalog";
 import AdminPannel from "./Components/core/Dashboard/AdminPannel";
-
+import CourseDetails from "./pages/CourseDetails";
 function App() {
 
   console.log = function () {};
@@ -86,6 +86,8 @@ function App() {
 
           <Route path="/contact" element={<ContactUs/>}/>
 
+          <Route path="/courses/:courseId" element={<CourseDetails />} />
+          
           <Route path="/about" element={<About/>}/>
 
           <Route
