@@ -13,6 +13,7 @@ import InstructorSection from "../Components/core/HomePage/InstructorSection"
 import ExploreMore from "../Components/core/HomePage/ExploreMore"
 import Footer from "../Components/common/Footer"
 import NavBar from "../Components/common/NavBar";
+import RatingSlider from "../Components/core/Ratings/RatingSlider";
 
 
 function Home() {
@@ -187,6 +188,10 @@ function Home() {
                     <InstructorSection/>
             </div>        
             {/*Section 4 */}
+            <div className="mb-16 mt-3">
+                <h2 className="text-center text-2xl md:text-4xl font-semibold mt-8 text-richblack-5 mb-5">Reviews from other learners</h2>
+                <RatingSlider/>
+            </div>
         </div>
     )
 }

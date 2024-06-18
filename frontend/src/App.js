@@ -34,6 +34,10 @@ import Cart from "./Components/core/Dashboard/Cart/index";
 import Catalog from "./pages/Catalog";
 import AdminPannel from "./Components/core/Dashboard/AdminPannel";
 import CourseDetails from "./pages/CourseDetails";
+
+import ViewCourse from "./pages/ViewCourse";
+import VideoDetails from "./Components/core/ViewCourse/VideoDetails";
+
 function App() {
 
   console.log = function () {};
@@ -134,6 +138,24 @@ function App() {
             </>
           )}
           
+        </Route>
+
+        <Route
+        element={
+          <PrivateRoute>
+            <ViewCourse/>
+          </PrivateRoute>
+        }>
+
+          {
+            user?.accountType === ACCOUNT_TYPE.STUDENT && (
+              <>
+                <Route path = "/dashboard/enrolled-courses/view-course/:courseId/section/:sectionId/sub-section/:subsectionId"
+                  element = {<VideoDetails/>}
+                />
+              </>
+            )
+          }
         </Route>
           
 
