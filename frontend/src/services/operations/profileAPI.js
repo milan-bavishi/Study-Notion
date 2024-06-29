@@ -154,12 +154,12 @@ export async function getInstructorDashboard(token,dispatch){
 
 export async function updatePfp(token,pfp){
     const toastId = toast.loading("Uploading...");
-
     try{
-
+        console.log("Here");
         const formData = new FormData();
         console.log("pfp",pfp);
         formData.append('pfp',pfp);
+        console.log("Here");
         const response = await apiConnector(
             "PUT",
             settingsEndpoints.UPDATE_DISPLAY_PICTURE_API,

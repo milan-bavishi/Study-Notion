@@ -144,8 +144,7 @@ exports.updateDisplayPicture = async (req,res) => {
             });
         }
 
-        const image = req.files.displayPicture;
-
+        const image = req.files.pfp;
         if(!image){
             return res.status(404).json({
                 success: false,
